@@ -48,10 +48,11 @@ UserSchema.methods.getJWTToken = async function () {
   });
 };
 
-UserSchema.pre("save", async function () {
-  const hashedPassword = await bcrypt.hash(this.password, 10);
-  this.password = hashedPassword;
-});
+// hash password statics
+UserSchema.statics.hashPassword = async function (password) {
+  const hashedPassword = await bcrypt.hash(password, 10);
+  return hashedPassword;
+};
 
 // compare password statics
 

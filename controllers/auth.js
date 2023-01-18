@@ -42,9 +42,9 @@ exports.registerUser = catchAsyncErrors(async (req, res, next) => {
     });
     return next(new ErrorHandler("passwords not matching", 401));
   }
-
+  const hashedPassword = await User.hashPassword(password);
   const user = new User({
-    password,
+    password: hashedPassword,
     username,
     email,
     profilePic,
@@ -93,6 +93,7 @@ exports.loginUser = catchAsyncErrors(async (req, res, next) => {
       success: false,
       message: "invalid email or password",
     });
+
     return next(new ErrorHandler("invalid email or password", 401));
   }
   res.user = user;

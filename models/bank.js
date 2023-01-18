@@ -19,7 +19,7 @@ const BankSchema = mongoose.Schema(
       lowercase: true,
     },
     contact: {
-      type: Number,
+      type: String,
       required: true,
       unique: true,
     },
@@ -34,7 +34,6 @@ const BankSchema = mongoose.Schema(
     licenseDocument: {
       type: String,
       default: "this is default document",
-      required: true,
     },
     estd: {
       type: String,

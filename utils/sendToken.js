@@ -14,7 +14,6 @@ const sendToken = async (res) => {
   };
 
   sendResponse(res, 200, payload);
-  // res.cookie("token", token).redirect("/");
 };
 
 module.exports = sendToken;
