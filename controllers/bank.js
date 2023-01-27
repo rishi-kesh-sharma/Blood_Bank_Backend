@@ -19,7 +19,12 @@ exports.registerBank = catchAsyncErrors(async (req, res, next) => {
   const bank = new Bank(req.body);
 
   const savedBank = await bank.save();
-
+  if (!savedBank) {
+    return sendResponse(res, 400, {
+      success: false,
+      message: "unable to register",
+    });
+  }
   sendResponse(res, 200, {
     success: true,
     message: "bank is registered",
@@ -30,8 +35,6 @@ exports.registerBank = catchAsyncErrors(async (req, res, next) => {
 // UPDATE bank
 
 exports.updateBank = catchAsyncErrors(async (req, res, next) => {
-  console.log(req.body);
-
   let bank = await Bank.findByIdAndUpdate(req.params.bankId, {
     $set: req.body,
     new: true,
@@ -59,7 +62,7 @@ exports.deleteBank = catchAsyncErrors(async (req, res, next) => {
       new ErrorHandler(`bank does not exist with id: ${req.params.bankId}`)
     );
   }
-  const removedBank = bank.remove();
+  const removedBank = await bank.remove();
   sendResponse(res, 200, {
     removedBank,
     success: true,
@@ -70,7 +73,7 @@ exports.deleteBank = catchAsyncErrors(async (req, res, next) => {
 // GET ALL bankS
 
 exports.getAllBanks = catchAsyncErrors(async (req, res, next) => {
-  const resultPerPage = 5;
+  const resultPerPage = Number(req.headers["rows-per-page"]);
 
   let apiFeature1 = new ApiFeatures(Bank.find(), req.query).search();
   let allBanks = await apiFeature1.query;
@@ -90,6 +93,7 @@ exports.getAllBanks = catchAsyncErrors(async (req, res, next) => {
     next: isNext,
     prev: apiFeature2.prev,
     skip: apiFeature2.skip,
+    count: totalbanks,
   });
 });
 // GET SINGLE bank
